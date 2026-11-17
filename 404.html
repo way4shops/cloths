@@ -1,6 +1,48 @@
-<script language="JavaScript">
-  // మీ Apps Script Web App URL ని ఇక్కడ పెట్టండి
+<!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Way4Shop</title>
+</head>
+<body style="background-color: black; margin: 0; padding: 0; color: white; font-family: Arial, sans-serif;">
+
+<div style="text-align: center; padding: 20px; margin-top: 50px;">
+    <h1 id="displayShopName" style="color: gold; font-size: 30px;">Loading Shop...</h1>
+    <p id="displayTagline" style="font-size: 18px; color: #ccc;"></p>
+</div>
+
+<!-- Call Now Button -->
+<div style="padding: 10px; text-align: center;">
+    <a id="callBtn" href="#" style="text-decoration: none;">
+        <button style="background-color: red; width: 90%; height: 50px; font-size: 20px; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            <b>Call Now</b>
+        </button>
+    </a>
+</div>
+
+<!-- WhatsApp Button -->
+<div style="padding: 10px; text-align: center;">
+    <a id="whatsappBtn" href="#" style="text-decoration: none;" target="_blank">
+        <button style="background-color: green; width: 90%; height: 50px; font-size: 20px; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            <b>WhatsApp</b>
+        </button>
+    </a>
+</div>
+
+<!-- Location Button -->
+<div style="padding: 10px; text-align: center;">
+    <a id="locationBtn" href="#" style="text-decoration: none;" target="_blank">
+        <button style="background-color: blue; width: 90%; height: 50px; font-size: 20px; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            <b>Location</b>
+        </button>
+    </a>
+</div>
+
+<script>
+  // మీ Google Apps Script Web App URL ని ఇక్కడ గట్టిగా పెట్టండి
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2bvQEmsnzwI_S8BgELzBd-idlQSEbLE_a1nOFVwCDx8yMyyfaqHoZaOI3TLd3XuJmmA/exec";
+
   window.addEventListener('DOMContentLoaded', (event) => {
     const pathSegments = window.location.pathname.split('/');
     const shopSlug = pathSegments[pathSegments.length - 1];
@@ -10,18 +52,12 @@
         .then(res => res.json())
         .then(data => {
           if (data.found) {
-            // 1. పేరు మరియు టైటిల్ మార్చడం
             document.getElementById("pageTitle").innerText = data.shopName;
-            document.getElementById("footerShopName").innerText = data.shopName;
+            document.getElementById("displayShopName").innerText = data.shopName;
+            document.getElementById("displayTagline").innerText = data.tagline || "";
             
-            // 2. ట్యాగ్‌లైన్ / అడ్రస్ సెట్ చేయడం (ఒకవేళ హెడర్ కింద చూపించాలనుకుంటే)
-            // document.getElementById("shopTagline").innerText = data.tagline;
-
-            // 3. కాల్, వాట్సాప్, లొకేషన్ బటన్స్ లింకులు మార్చడం
             if(data.phone) {
               document.getElementById("callBtn").href = "tel:" + data.phone;
-              document.getElementById("quoteBtn").href = "sms:" + data.phone + "?body=Hello, send quotation...";
-              document.getElementById("orderBtn").href = "sms:" + data.phone + "?body=Hello, I want to order...";
             }
             if(data.whatsapp) {
               document.getElementById("whatsappBtn").href = "https://wa.me/" + data.whatsapp;
@@ -29,30 +65,17 @@
             if(data.locationUrl) {
               document.getElementById("locationBtn").href = data.locationUrl;
             }
-            
-            // 4. యూట్యూబ్ వీడియో మార్చడం
-            if(data.youtubeId) {
-              document.getElementById("shopVideo").src = "https://www.youtube.com/embed/" + data.youtubeId;
-            }
-
-            // 5. వాట్సాప్ షేర్ లింక్
-            document.getElementById("shareBtn").href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(data.shopName) + "..Best Offer's...Please Visit Our Site: " + window.location.href;
           } else {
-            document.getElementById("footerShopName").innerText = "Shop Not Found";
+            document.getElementById("displayShopName").innerText = "Shop Not Found";
           }
         })
         .catch(err => {
-          console.log("Error fetching shop data", err);
+          console.log("Error:", err);
+          document.getElementById("displayShopName").innerText = "Error Loading Shop";
         });
     }
   });
-
-  // రైట్ క్లిక్ & ఇన్‌స్పెక్ట్ లాక్ కోడ్
-  document.addEventListener("contextmenu", function(e){ e.preventDefault(); }, false);
-  document.addEventListener("keydown", function(e) {
-    if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) { e.preventDefault(); }
-    if (e.keyCode == 83 && (e.platform.match("Mac") ? e.metaKey : e.ctrlKey)) { e.preventDefault(); }
-    if (e.ctrlKey && e.keyCode == 85) { e.preventDefault(); }
-    if (e.keyCode == 123) { e.preventDefault(); }
-  }, false);
 </script>
+
+</body>
+</html>
