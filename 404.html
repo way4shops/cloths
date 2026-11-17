@@ -128,43 +128,44 @@
 </style>
 
 <script language="JavaScript">
-  // మీ Google Apps Script Web App URL ని ఇక్కడ పెట్టండి
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2bvQEmsnzwI_S8BgELzBd-idlQSEbLE_a1nOFVwCDx8yMyyfaqHoZaOI3TLd3XuJmmA/exec";
+  // మీ Google Apps Script Web App URL ఇక్కడ పెట్టండి
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxWt-QVH1WmzKaqSd0yHK2eryMVufuzKl_CaL8PlRl8Id1pECYadpJdI4QbKctRNZTfzQ/exec";
+
+  // JSONP ద్వారా డేటా రిసీవ్ చేసుకునే ఫంక్షన్
+  function handleShopData(data) {
+    if (data && data.found) {
+      document.getElementById("pageTitle").innerText = data.shopName;
+      document.getElementById("footerShopName").innerText = data.shopName;
+      
+      if(data.phone) {
+        document.getElementById("callBtn").href = "tel:" + data.phone;
+        document.getElementById("quoteBtn").href = "sms:" + data.phone + "?body=Hello, send quotation...";
+        document.getElementById("orderBtn").href = "sms:" + data.phone + "?body=Hello, I want to order...";
+      }
+      if(data.whatsapp) {
+        document.getElementById("whatsappBtn").href = "https://wa.me/" + data.whatsapp;
+      }
+      if(data.locationUrl) {
+        document.getElementById("locationBtn").href = data.locationUrl;
+      }
+      if(data.youtubeId) {
+        document.getElementById("shopVideo").src = "https://www.youtube.com/embed/" + data.youtubeId;
+      }
+      document.getElementById("shareBtn").href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(data.shopName) + "..Best Offer's...Please Visit Our Site: " + window.location.href;
+    } else {
+      document.getElementById("footerShopName").innerText = "Shop Not Found";
+    }
+  }
 
   window.addEventListener('DOMContentLoaded', (event) => {
     const pathSegments = window.location.pathname.split('/');
     const shopSlug = pathSegments[pathSegments.length - 1];
 
     if (shopSlug && shopSlug !== "" && shopSlug !== "404.html") {
-      fetch(SCRIPT_URL + "?slug=" + shopSlug)
-        .then(res => res.json())
-        .then(data => {
-          if (data.found) {
-            document.getElementById("pageTitle").innerText = data.shopName;
-            document.getElementById("footerShopName").innerText = data.shopName;
-            
-            if(data.phone) {
-              document.getElementById("callBtn").href = "tel:" + data.phone;
-              document.getElementById("quoteBtn").href = "sms:" + data.phone + "?body=Hello, send quotation...";
-              document.getElementById("orderBtn").href = "sms:" + data.phone + "?body=Hello, I want to order...";
-            }
-            if(data.whatsapp) {
-              document.getElementById("whatsappBtn").href = "https://wa.me/" + data.whatsapp;
-            }
-            if(data.locationUrl) {
-              document.getElementById("locationBtn").href = data.locationUrl;
-            }
-            if(data.youtubeId) {
-              document.getElementById("shopVideo").src = "https://www.youtube.com/embed/" + data.youtubeId;
-            }
-            document.getElementById("shareBtn").href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(data.shopName) + "..Best Offer's...Please Visit Our Site: " + window.location.href;
-          } else {
-            document.getElementById("footerShopName").innerText = "Shop Not Found";
-          }
-        })
-        .catch(err => {
-          console.log("Error fetching shop data", err);
-        });
+      // డైరెక్ట్ fetch బదులుగా script tag ఇంజెక్ట్ చేయడం (CORS సమస్య రాదు)
+      const script = document.createElement('script');
+      script.src = SCRIPT_URL + "?slug=" + shopSlug + "&callback=handleShopData";
+      document.body.appendChild(script);
     }
   });
 
