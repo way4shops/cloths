@@ -128,7 +128,7 @@
 </style>
 
 <script language="JavaScript">
-  // ఇక్కడ మీ గూగుల్ యాప్ స్క్రిప్ట్ వెబ్ ఆప్ URL ని డబుల్ కోట్స్‌లో పెట్టండి
+  // మీ Google Apps Script Web App URL ని ఇక్కడ పెట్టండి
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2bvQEmsnzwI_S8BgELzBd-idlQSEbLE_a1nOFVwCDx8yMyyfaqHoZaOI3TLd3XuJmmA/exec";
 
   window.addEventListener('DOMContentLoaded', (event) => {
@@ -143,7 +143,6 @@
             document.getElementById("pageTitle").innerText = data.shopName;
             document.getElementById("footerShopName").innerText = data.shopName;
             
-            // ఫోన్ నంబర్లు మరియు వాట్సాప్ లింకులు అప్డేట్ చేయడం
             if(data.phone) {
               document.getElementById("callBtn").href = "tel:" + data.phone;
               document.getElementById("quoteBtn").href = "sms:" + data.phone + "?body=Hello, send quotation...";
@@ -155,13 +154,9 @@
             if(data.locationUrl) {
               document.getElementById("locationBtn").href = data.locationUrl;
             }
-            
-            // యూట్యూబ్ వీడియో అప్డేట్ చేయడం
             if(data.youtubeId) {
               document.getElementById("shopVideo").src = "https://www.youtube.com/embed/" + data.youtubeId;
             }
-
-            // షేర్ లింక్ అప్డేట్ చేయడం
             document.getElementById("shareBtn").href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(data.shopName) + "..Best Offer's...Please Visit Our Site: " + window.location.href;
           } else {
             document.getElementById("footerShopName").innerText = "Shop Not Found";
@@ -173,7 +168,6 @@
     }
   });
 
-  // రైట్ క్లిక్ & ఇన్‌స్పెక్ట్ లాక్ కోడ్
   document.addEventListener("contextmenu", function(e){ e.preventDefault(); }, false);
   document.addEventListener("keydown", function(e) {
     if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) { e.preventDefault(); }
