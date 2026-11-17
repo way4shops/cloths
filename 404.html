@@ -131,53 +131,33 @@
   // మీ Google Apps Script Web App URL ని ఇక్కడ పెట్టండి
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbykKq_TT4e-74fH2A_M52LyXZUGKd-M2HLUj2apVIwvoVlc8tkrvt5HV9LrquqQrs0z/exec";
 
-  window.addEventListener('DOMContentLoaded', (event) => {
-    const pathSegments = window.location.pathname.split('/');
-    const shopSlug = pathSegments[pathSegments.length - 1];
-
-    if (shopSlug && shopSlug !== "" && shopSlug !== "shop.html") {
-      // గూగుల్ షీట్ నుండి ఆ షాప్ డేటా తెచ్చుకోవడం
-      fetch(SCRIPT_URL + "?slug=" + shopSlug)
-        .then(res => res.json())
+.then(res => res.json())
         .then(data => {
           if (data.found) {
             document.getElementById("pageTitle").innerText = data.shopName;
             document.getElementById("footerShopName").innerText = data.shopName;
             
-            // ఫోన్ నంబర్లు మరియు వాట్సాప్ లింకులు అప్డేట్ చేయడం
+            // 1. షాప్ ట్యాగ్‌లైన్ / డిస్క్రిప్షన్ ఎక్కడ చూపించాలో అక్కడ ఇది పెట్టండి (ఉదాహరణకు ఒకవేళ ట్యాగ్‌లైన్ చూపించే ఎలిమెంట్ ఉంటే)
+            // document.getElementById("shopTagline").innerText = data.tagline;
+            
+            // 2. ఫోన్ నంబర్లు మరియు వాట్సాప్ లింకులు అప్డేట్ చేయడం
             document.getElementById("callBtn").href = "tel:" + data.phone;
             document.getElementById("quoteBtn").href = "sms:" + data.phone + "?body=Hello, send quotation...";
             document.getElementById("orderBtn").href = "sms:" + data.phone + "?body=Hello, I want to order...";
             document.getElementById("whatsappBtn").href = "https://wa.me/" + data.whatsapp;
             document.getElementById("locationBtn").href = data.locationUrl;
             
-            // యూట్యూబ్ వీడియో అప్డేట్ చేయడం
+            // 3. యూట్యూబ్ వీడియో అప్డేట్ చేయడం
             if(data.youtubeId) {
               document.getElementById("shopVideo").src = "https://www.youtube.com/embed/" + data.youtubeId;
             }
 
-            // షేర్ లింక్ అప్డేట్ చేయడం
+            // 4. షేర్ లింక్ అప్డేట్ చేయడం
             document.getElementById("shareBtn").href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(data.shopName) + "..Best Offer's...Please Visit Our Site: " + window.location.href;
           } else {
             document.getElementById("footerShopName").innerText = "Shop Not Found";
           }
         })
-        .catch(err => {
-          console.log("Error fetching shop data");
-        });
-    }
-  });
-
-  // రైట్ క్లిక్ & ఇన్‌స్పెక్ట్ లాక్ కోడ్
-  document.addEventListener("contextmenu", function(e){ e.preventDefault(); }, false);
-  document.addEventListener("keydown", function(e) {
-    if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) { e.preventDefault(); }
-    if (e.keyCode == 83 && (e.platform.match("Mac") ? e.metaKey : e.ctrlKey)) { e.preventDefault(); }
-    if (e.ctrlKey && e.keyCode == 85) { e.preventDefault(); }
-    if (e.keyCode == 123) { e.preventDefault(); }
-  }, false);
-</script>
-
 <br><br><br><br><br><br><br><br><br><br><br><br>
 </body>
 </html>
